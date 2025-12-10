@@ -1,0 +1,29 @@
+{
+  "name": "plinth-cli",
+  "version": "0.1.0",
+  "description": "CLI tool for Plinth developer platform",
+  "type": "module",
+  "bin": {
+    "plinth": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "inquirer": "^9.2.0",
+    "ora": "^8.1.0",
+    "chalk": "^5.3.0",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.0",
+    "@types/node": "^22.0.0",
+    "@types/fs-extra": "^11.0.4"
+  },
+  "files": ["dist", "templates"],
+  "license": "MIT"
+}
