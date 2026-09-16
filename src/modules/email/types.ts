@@ -19,4 +19,5 @@ export type EmailTemplateName =
   | "password-reset"
   | "invitation"
   | "welcome"
-  | "payment-confirmation";
+  | "payment-confirmation"
+  | "magic-link";

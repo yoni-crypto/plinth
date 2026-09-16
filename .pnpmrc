@@ -1,0 +1,1 @@
+onlyBuiltDependencies=["@parcel/watcher","@sentry/cli","@swc/core","core-js","msgpackr-extract","protobufjs"]

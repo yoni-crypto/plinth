@@ -36,6 +36,10 @@ function renderTemplate(name: EmailTemplateName, data: Record<string, string>): 
       subject: "Payment confirmed",
       html: `<p>Hi ${d.name || "there"},</p><p>Your payment of <strong>${d.amount || ""}</strong> has been confirmed.</p><p>Thank you for your purchase!</p>`,
     }),
+    "magic-link": (d) => ({
+      subject: "Your verification code",
+      html: `<p>Hi ${d.email || "there"},</p><p>Your verification code is: <strong>${d.url}</strong></p><p>This code expires in 10 minutes.</p>`,
+    }),
   };
 
   return templates[name](data);

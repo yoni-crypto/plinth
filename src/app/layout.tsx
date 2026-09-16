@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { PostHogProvider, PostHogPageView } from "@/lib/analytics/posthog";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,6 +41,15 @@ export const metadata: Metadata = {
     "open source",
     "free",
     "MIT license",
+    "Better Auth",
+    "2FA",
+    "OAuth",
+    "i18n",
+    "React Email",
+    "PostHog",
+    "Sentry",
+    "Inngest",
+    "AI SDK",
   ],
   authors: [{ name: "yoni-crypto", url: "https://github.com/yoni-crypto" }],
   creator: "yoni-crypto",
@@ -137,6 +147,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "Email Integration",
       "File Storage",
       "Rate Limiting",
+      "Background Jobs",
+      "Analytics",
+      "AI Integration",
+      "i18n",
+      "2FA",
+      "OAuth",
     ],
   };
 
@@ -153,14 +169,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <PostHogProvider>
+          <PostHogPageView />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

@@ -30,7 +30,7 @@ Building a SaaS product from scratch requires months of work on authentication, 
 
 | Feature | Description |
 |---|---|
-| **Authentication** | JWT sessions, HttpOnly cookies, bcryptjs, middleware protection |
+| **Authentication** | Better Auth with OAuth, 2FA, magic links, and session management |
 | **Authorization** | RBAC with Owner/Admin/Member/Viewer roles + granular permissions |
 | **Billing** | Stripe + Chapa adapters, plans, subscriptions, feature gates, usage limits |
 | **Multi-tenancy** | Organization-based isolation with membership management |
@@ -39,10 +39,21 @@ Building a SaaS product from scratch requires months of work on authentication, 
 | **API Keys** | Prefix-based key management with scoping and expiration |
 | **Webhooks** | Outgoing webhooks with HMAC-SHA256 signatures and delivery logging |
 | **Feature Flags** | Global, user-specific, and org-specific overrides |
-| **Email** | Resend + SMTP adapters with templating |
-| **Storage** | S3/R2 + local adapters with file validation |
+| **Email** | React Email templates + Resend + SMTP adapters |
+| **Storage** | UploadThing + S3/R2 + local adapters with file validation |
 | **Rate Limiting** | Sliding window algorithm with response headers |
 | **Admin Panel** | User management, org management, system stats |
+| **Background Jobs** | Inngest for async task processing |
+| **Analytics** | PostHog integration for user analytics |
+| **AI Integration** | Vercel AI SDK for chat and completions |
+| **i18n** | next-intl for internationalization (10 languages) |
+| **Blog/Docs** | MDX-powered content management |
+| **E2E Tests** | Playwright for end-to-end testing |
+| **Error Monitoring** | Sentry integration for error tracking |
+| **Credits System** | Usage-based billing with credit management |
+| **Waitlist** | Launch waitlist with referral tracking |
+| **User Impersonation** | Admin can login as user for support |
+| **Onboarding** | Multi-step onboarding flow |
 | **Health Checks** | Database latency monitoring and status endpoints |
 | **CLI** | Project scaffolding and module generation |
 
@@ -50,15 +61,20 @@ Building a SaaS product from scratch requires months of work on authentication, 
 
 | Layer | Technology |
 |---|---|
-| Framework | [Next.js 16](https://nextjs.org/) + [React 19](https://react.dev/) |
+| Framework | [Next.js 15](https://nextjs.org/) + [React 19](https://react.dev/) |
 | Language | [TypeScript 5](https://www.typescriptlang.org/) (strict mode) |
 | Styling | [Tailwind CSS v4](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/) |
 | Database | [PostgreSQL](https://www.postgresql.org/) + [Drizzle ORM](https://orm.drizzle.team/) |
-| Auth | [jose](https://github.com/panva/jose) (JWT) + bcryptjs |
+| Auth | [Better Auth](https://better-auth.com/) (OAuth, 2FA, magic links) |
 | Payments | [Stripe](https://stripe.com/) + [Chapa](https://chapa.co/) |
-| Email | [Resend](https://resend.com/) + SMTP |
-| Storage | [AWS S3](https://aws.amazon.com/s3/) + local filesystem |
-| Testing | [Vitest](https://vitest.dev/) |
+| Email | [React Email](https://react.email/) + [Resend](https://resend.com/) + SMTP |
+| Storage | [UploadThing](https://uploadthing.com/) + [AWS S3](https://aws.amazon.com/s3/) |
+| Analytics | [PostHog](https://posthog.com/) |
+| AI | [Vercel AI SDK](https://sdk.vercel.ai/) |
+| Background Jobs | [Inngest](https://inngest.com/) |
+| Error Monitoring | [Sentry](https://sentry.io/) |
+| i18n | [next-intl](https://next-intl.dev/) |
+| Testing | [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) |
 | Deployment | [Docker](https://www.docker.com/) + [Vercel](https://vercel.com/) |
 
 ## Quick Start
@@ -99,7 +115,8 @@ Visit [http://localhost:3000](http://localhost:3000)
 
 | Email | Password | Role |
 |---|---|---|
-| admin@example.com | password123 | Owner |
+| admin@plinth.dev | password123 | Super Admin |
+| member@plinth.dev | password123 | Member |
 
 ## Configuration
 
@@ -113,6 +130,12 @@ AUTH_SECRET=your-secret-key-at-least-32-chars
 ### Optional
 
 ```env
+# OAuth
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+
 # Auth
 AUTH_EXPIRES_IN=7d
 
@@ -121,11 +144,30 @@ EMAIL_PROVIDER=resend|smtp|log
 EMAIL_FROM=noreply@example.com
 
 # Storage (default: local)
-STORAGE_PROVIDER=s3|local
+STORAGE_PROVIDER=uploadthing|s3|local
 STORAGE_BUCKET=uploads
 
 # Payments (default: stripe)
 PAYMENT_PROVIDER=stripe|chapa
+
+# UploadThing
+UPLOADTHING_SECRET=
+UPLOADTHING_APP_ID=
+
+# PostHog Analytics
+NEXT_PUBLIC_POSTHOG_KEY=
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+
+# Sentry
+NEXT_PUBLIC_SENTRY_DSN=
+SENTRY_AUTH_TOKEN=
+
+# AI
+OPENAI_API_KEY=
+
+# Inngest
+INNGEST_EVENT_KEY=
+INNGEST_SIGNING_KEY=
 
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -143,6 +185,7 @@ See [`.env.example`](.env.example) for all available options.
 | `pnpm lint` | Run ESLint |
 | `pnpm typecheck` | Run TypeScript type checking |
 | `pnpm test` | Run Vitest tests |
+| `pnpm test:e2e` | Run Playwright E2E tests |
 | `pnpm db:push` | Push schema to database |
 | `pnpm db:generate` | Generate migration files |
 | `pnpm db:migrate` | Run migrations |
@@ -168,21 +211,28 @@ docker compose exec app pnpm db:seed
 plinth/
 ├── src/
 │   ├── app/                    # Next.js App Router
-│   │   ├── (auth)/             # Login, Register pages
-│   │   ├── (dashboard)/        # Dashboard, Settings, Admin
+│   │   ├── (auth)/             # Login, Register, 2FA, etc.
+│   │   ├── (dashboard)/        # Dashboard, Settings, Admin, Onboarding
+│   │   ├── (marketing)/        # Blog, Docs
 │   │   └── api/                # API routes
 │   ├── components/             # UI components
-│   │   ├── ui/                 # shadcn primitives (26 components)
+│   │   ├── ui/                 # shadcn primitives (50+ components)
 │   │   ├── layout/             # AppShell, Sidebar, Header
 │   │   ├── forms/              # FormField, FormSection
 │   │   ├── data/               # DataTable, SearchInput
 │   │   └── shared/             # EmptyState, ErrorState, Loading
 │   ├── config/                 # Environment validation (Zod)
 │   ├── lib/                    # Utilities, DB client, schema
+│   │   ├── auth/               # Better Auth configuration
+│   │   ├── analytics/          # PostHog integration
+│   │   ├── jobs/               # Inngest background jobs
+│   │   └── ai/                 # Vercel AI SDK
 │   ├── hooks/                  # Custom React hooks
+│   ├── i18n/                   # Internationalization config
+│   ├── messages/               # Translation files (10 languages)
 │   └── modules/                # Feature modules
 │       ├── auth/               # Authentication & sessions
-│       ├── billing/            # Plans, subscriptions, gates
+│       ├── billing/            # Plans, subscriptions, gates, credits
 │       ├── rbac/               # Roles & permissions
 │       ├── organizations/      # Multi-tenancy
 │       ├── notifications/      # In-app notifications
@@ -190,17 +240,20 @@ plinth/
 │       ├── api-keys/           # API key management
 │       ├── webhooks/           # Outgoing webhooks
 │       ├── payments/           # Stripe & Chapa adapters
-│       ├── email/              # Resend & SMTP adapters
-│       ├── storage/            # S3 & local storage
+│       ├── email/              # React Email + Resend + SMTP
+│       ├── storage/            # UploadThing + S3 & local storage
 │       ├── feature-flags/      # Feature flag system
-│       ├── admin/              # Admin module
+│       ├── admin/              # Admin module + impersonation
 │       ├── rate-limit/         # Rate limiting
+│       ├── waitlist/           # Launch waitlist system
 │       └── module-system/      # Plugin architecture
 ├── packages/
 │   └── cli/                    # CLI tool for scaffolding
+├── content/                    # MDX blog posts
 ├── docs/                       # Documentation site
 ├── scripts/                    # Seed & utility scripts
-└── tests/                      # Test setup
+├── tests/                      # E2E tests (Playwright)
+└── sentry.client.config.ts     # Sentry configuration
 ```
 
 ## Deployment

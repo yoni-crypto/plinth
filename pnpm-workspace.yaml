@@ -1,4 +1,10 @@
 allowBuilds:
+  '@parcel/watcher': true
+  '@sentry/cli': true
+  '@swc/core': true
+  core-js: true
   esbuild: true
+  msgpackr-extract: true
+  protobufjs: true
   sharp: false
   unrs-resolver: false

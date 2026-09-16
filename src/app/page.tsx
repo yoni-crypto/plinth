@@ -2,259 +2,406 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Icons } from "@/components/shared/icons";
 import {
   Shield,
   CreditCard,
   Users,
-  Bell,
-  FileText,
-  Key,
-  Webhook,
-  Flag,
-  Lock,
-  Database,
+  LayoutDashboard,
   Zap,
+  Globe,
+  Lock,
+  BarChart3,
   ArrowRight,
-  Star,
-  Github,
+  Check,
 } from "lucide-react";
 
 const features = [
   {
-    icon: Lock,
-    title: "Authentication",
-    description: "JWT sessions, HttpOnly cookies, bcryptjs hashing, middleware protection",
-  },
-  {
     icon: Shield,
-    title: "RBAC & Authorization",
-    description: "Owner/Admin/Member/Viewer roles with granular permissions",
+    title: "Authentication",
+    description:
+      "Secure auth with OAuth, 2FA, magic links, and session management powered by Better Auth.",
   },
   {
     icon: CreditCard,
-    title: "Billing & Payments",
-    description: "Stripe + Chapa adapters, plans, subscriptions, feature gates",
+    title: "Billing",
+    description:
+      "Stripe integration with subscriptions, usage-based billing, and multi-currency support.",
   },
   {
     icon: Users,
-    title: "Multi-tenancy",
-    description: "Organization-based isolation with membership management",
+    title: "Multi-Tenancy",
+    description:
+      "Organization management with team invitations, RBAC, and custom permissions.",
   },
   {
-    icon: Bell,
-    title: "Notifications",
-    description: "In-app notification system with read/unread tracking",
-  },
-  {
-    icon: FileText,
-    title: "Audit Logging",
-    description: "Complete audit trail for all user and admin actions",
-  },
-  {
-    icon: Key,
-    title: "API Keys",
-    description: "Prefix-based key management with scoping and expiration",
-  },
-  {
-    icon: Webhook,
-    title: "Webhooks",
-    description: "HMAC-SHA256 signed deliveries with retry logic",
-  },
-  {
-    icon: Flag,
-    title: "Feature Flags",
-    description: "Global, user-specific, and org-specific overrides",
-  },
-  {
-    icon: Database,
-    title: "Email & Storage",
-    description: "Resend/SMTP email + S3/local file storage adapters",
+    icon: LayoutDashboard,
+    title: "Admin Dashboard",
+    description:
+      "Built-in admin panel for managing users, organizations, and system health.",
   },
   {
     icon: Zap,
-    title: "Rate Limiting",
-    description: "Sliding window algorithm with response headers",
+    title: "Background Jobs",
+    description:
+      "Async task processing with Inngest for emails, webhooks, and scheduled tasks.",
   },
   {
-    icon: Shield,
-    title: "Admin Panel",
-    description: "User management, org management, system health checks",
+    icon: Globe,
+    title: "Internationalization",
+    description:
+      "Multi-language support with next-intl for global reach.",
+  },
+  {
+    icon: Lock,
+    title: "Feature Flags",
+    description:
+      "Toggle features without deploying with global, user, and organization flags.",
+  },
+  {
+    icon: BarChart3,
+    title: "Analytics",
+    description:
+      "PostHog integration for user analytics, events, and insights.",
   },
 ];
 
-const stats = [
-  { value: "18+", label: "Modules" },
-  { value: "26", label: "UI Components" },
-  { value: "23", label: "API Routes" },
-  { value: "6", label: "Months of Development" },
+const techStack = [
+  { name: "Next.js 15", description: "React framework" },
+  { name: "React 19", description: "UI library" },
+  { name: "TypeScript 5", description: "Type safety" },
+  { name: "Tailwind CSS 4", description: "Styling" },
+  { name: "Drizzle ORM", description: "Database ORM" },
+  { name: "PostgreSQL", description: "Database" },
+  { name: "Better Auth", description: "Authentication" },
+  { name: "Stripe", description: "Payments" },
 ];
 
-export default function HomePage() {
-  return (
-    <div className="flex flex-col min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center justify-between mx-auto px-4">
-          <div className="flex items-center gap-2 font-bold text-xl">
-            <Database className="h-5 w-5" />
-            Plinth
-          </div>
-          <nav className="flex items-center gap-4">
-            <Link href="/login" className="text-sm text-muted-foreground hover:text-foreground">
-              Login
-            </Link>
-            <Link href="/register">
-              <Button size="sm">Get Started</Button>
-            </Link>
-          </nav>
-        </div>
-      </header>
+const pricingPlans = [
+  {
+    name: "Free",
+    price: "$0",
+    description: "Perfect for getting started",
+    features: [
+      "100 credits/month",
+      "1 organization",
+      "Basic auth",
+      "Community support",
+    ],
+    cta: "Get Started",
+    href: "/register",
+    popular: false,
+  },
+  {
+    name: "Pro",
+    price: "$29",
+    description: "For growing teams",
+    features: [
+      "10,000 credits/month",
+      "Unlimited organizations",
+      "2FA & OAuth",
+      "Priority support",
+      "Custom domains",
+      "Advanced analytics",
+    ],
+    cta: "Start Free Trial",
+    href: "/register?plan=pro",
+    popular: true,
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    description: "For large organizations",
+    features: [
+      "Unlimited credits",
+      "Unlimited organizations",
+      "SSO & SAML",
+      "Dedicated support",
+      "Custom integrations",
+      "SLA guarantee",
+    ],
+    cta: "Contact Sales",
+    href: "/contact",
+    popular: false,
+  },
+];
 
+export default function LandingPage() {
+  return (
+    <div className="flex flex-col">
       {/* Hero */}
-      <section className="container mx-auto px-4 py-24 text-center">
-        <div className="mx-auto max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full border bg-muted px-3 py-1 text-sm mb-6">
-            <Star className="h-3 w-3 fill-primary text-primary" />
-            Open Source — MIT License
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-6">
-            Build SaaS products
-            <br />
-            <span className="text-primary">in days, not months</span>
-          </h1>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Plinth is a production-ready, modular developer platform with authentication,
-            billing, RBAC, notifications, and 15+ more features — all out of the box.
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <Link href="/register">
-              <Button size="lg" className="gap-2">
-                Get Started Free
-                <ArrowRight className="h-4 w-4" />
+      <section className="relative overflow-hidden border-b">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
+        <div className="container relative mx-auto px-4 py-24 sm:py-32">
+          <div className="mx-auto max-w-3xl text-center">
+            <Badge variant="secondary" className="mb-4">
+              Open Source SaaS Starter
+            </Badge>
+            <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-6xl">
+              Build Your SaaS{" "}
+              <span className="text-primary">Faster</span>
+            </h1>
+            <p className="mb-8 text-lg text-muted-foreground sm:text-xl">
+              The ultimate open-source starter for building production-ready SaaS
+              applications with Next.js, React, and TypeScript.
+            </p>
+            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Button size="lg" render={<Link href="/register" />}>
+                Get Started
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-            </Link>
-            <a href="https://github.com/yoni-crypto/plinth" target="_blank" rel="noreferrer">
-              <Button variant="outline" size="lg" className="gap-2">
-                <Github className="h-4 w-4" />
-                Star on GitHub
+              <Button size="lg" variant="outline" render={<a href="https://github.com/yoni-crypto/plinth" target="_blank" rel="noopener noreferrer" />}>
+                <Icons.github className="mr-2 h-4 w-4" />
+                View on GitHub
               </Button>
-            </a>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Stats */}
-      <section className="border-y bg-muted/50">
+      <section className="border-b bg-muted/50">
         <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {stats.map((stat) => (
-              <div key={stat.label}>
-                <div className="text-3xl font-bold">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+            <div className="text-center">
+              <div className="text-3xl font-bold">7.3k+</div>
+              <div className="text-sm text-muted-foreground">GitHub Stars</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold">50+</div>
+              <div className="text-sm text-muted-foreground">Components</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold">18</div>
+              <div className="text-sm text-muted-foreground">Modules</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold">100%</div>
+              <div className="text-sm text-muted-foreground">TypeScript</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-24">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <h2 className="mb-4 text-3xl font-bold">Everything You Need</h2>
+            <p className="text-muted-foreground">
+              A complete toolkit for building modern SaaS applications
+            </p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {features.map((feature) => (
+              <Card key={feature.title} className="border-0 bg-muted/50">
+                <CardHeader>
+                  <feature.icon className="mb-2 h-8 w-8 text-primary" />
+                  <CardTitle className="text-lg">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Tech Stack */}
+      <section className="border-y bg-muted/50 py-24">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <h2 className="mb-4 text-3xl font-bold">Built with Modern Tech</h2>
+            <p className="text-muted-foreground">
+              Using the latest technologies for the best developer experience
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {techStack.map((tech) => (
+              <div
+                key={tech.name}
+                className="rounded-lg border bg-background p-4 text-center"
+              >
+                <div className="font-medium">{tech.name}</div>
+                <div className="text-sm text-muted-foreground">
+                  {tech.description}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="container mx-auto px-4 py-24">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">Everything you need to ship</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Stop rebuilding the same features for every project. Plinth gives you
-            production-ready infrastructure so you can focus on your product.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              <div key={feature.title} className="rounded-lg border p-6 hover:shadow-lg transition-shadow">
-                <Icon className="h-8 w-8 text-primary mb-4" />
-                <h3 className="font-semibold mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Tech Stack */}
-      <section className="border-t bg-muted/50">
-        <div className="container mx-auto px-4 py-24 text-center">
-          <h2 className="text-3xl font-bold mb-4">Built with modern tech</h2>
-          <p className="text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Next.js 16, React 19, TypeScript 5, Tailwind CSS, shadcn/ui, PostgreSQL, Drizzle ORM, and more.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {[
-              "Next.js 16",
-              "React 19",
-              "TypeScript 5",
-              "Tailwind CSS",
-              "shadcn/ui",
-              "PostgreSQL",
-              "Drizzle ORM",
-              "Stripe",
-              "Chapa",
-              "Resend",
-              "AWS S3",
-              "Vitest",
-              "Docker",
-            ].map((tech) => (
-              <span key={tech} className="rounded-full border bg-background px-4 py-2 text-sm font-medium">
-                {tech}
-              </span>
+      {/* Pricing */}
+      <section className="py-24">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <h2 className="mb-4 text-3xl font-bold">Simple Pricing</h2>
+            <p className="text-muted-foreground">
+              Choose the plan that works for you
+            </p>
+          </div>
+          <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
+            {pricingPlans.map((plan) => (
+              <Card
+                key={plan.name}
+                className={`relative ${plan.popular ? "border-primary shadow-lg" : ""}`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <Badge>Most Popular</Badge>
+                  </div>
+                )}
+                <CardHeader>
+                  <CardTitle>{plan.name}</CardTitle>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-bold">{plan.price}</span>
+                    {plan.price !== "Custom" && (
+                      <span className="text-muted-foreground">/month</span>
+                    )}
+                  </div>
+                  <CardDescription>{plan.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-2">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-primary" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className="w-full"
+                    variant={plan.popular ? "default" : "outline"}
+                    render={<Link href={plan.href} />}
+                  >
+                    {plan.cta}
+                  </Button>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="container mx-auto px-4 py-24 text-center">
-        <div className="mx-auto max-w-2xl">
-          <h2 className="text-3xl font-bold mb-4">Ready to build?</h2>
-          <p className="text-muted-foreground mb-8">
-            Start building your next SaaS product today. Free and open source.
+      <section className="border-t bg-muted/50 py-24">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="mb-4 text-3xl font-bold">Ready to Build?</h2>
+          <p className="mb-8 text-muted-foreground">
+            Start building your SaaS today with Plinth
           </p>
-          <div className="flex items-center justify-center gap-4">
-            <Link href="/register">
-              <Button size="lg" className="gap-2">
-                Start Building
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            <a href="https://github.com/yoni-crypto/plinth" target="_blank" rel="noreferrer">
-              <Button variant="outline" size="lg">
-                View Source Code
-              </Button>
-            </a>
-          </div>
+          <Button size="lg" render={<Link href="/register" />}>
+            Get Started Free
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t mt-auto">
-        <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 font-semibold">
-            <Database className="h-4 w-4" />
-            Plinth
+      <footer className="border-t py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid gap-8 md:grid-cols-4">
+            <div>
+              <div className="mb-4 flex items-center gap-2">
+                <Icons.logo className="h-6 w-6" />
+                <span className="text-lg font-bold">Plinth</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                The ultimate open-source SaaS starter.
+              </p>
+            </div>
+            <div>
+              <h4 className="mb-4 font-medium">Product</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="/docs" className="hover:text-primary">
+                    Documentation
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog" className="hover:text-primary">
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/pricing" className="hover:text-primary">
+                    Pricing
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-4 font-medium">Community</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <a
+                    href="https://github.com/yoni-crypto/plinth"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary"
+                  >
+                    GitHub
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-primary">
+                    Discord
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-primary">
+                    Twitter
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-4 font-medium">Legal</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="/privacy" className="hover:text-primary">
+                    Privacy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="hover:text-primary">
+                    Terms
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/license" className="hover:text-primary">
+                    License
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Built by{" "}
-            <a href="https://github.com/yoni-crypto" className="underline hover:text-foreground">
-              yoni-crypto
-            </a>
-            . MIT License.
-          </p>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <a href="https://github.com/yoni-crypto/plinth" className="hover:text-foreground">
-              GitHub
-            </a>
-            <a href="https://github.com/yoni-crypto/plinth/issues" className="hover:text-foreground">
-              Issues
-            </a>
+          <Separator className="my-8" />
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <p className="text-sm text-muted-foreground">
+              © 2026 Plinth. MIT License.
+            </p>
+            <div className="flex items-center gap-4">
+              <a
+                href="https://github.com/yoni-crypto/plinth"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icons.github className="h-5 w-5 text-muted-foreground hover:text-primary" />
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer">
+                <Icons.twitter className="h-5 w-5 text-muted-foreground hover:text-primary" />
+              </a>
+            </div>
           </div>
         </div>
       </footer>
