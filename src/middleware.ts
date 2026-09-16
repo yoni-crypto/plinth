@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { verifySessionToken } from "@/modules/auth/lib/session";
 import { checkRateLimit, getRateLimitHeaders } from "@/modules/rate-limit";
 
-const publicPaths = ["/login", "/register", "/api/auth/login", "/api/auth/register"];
+const publicPaths = ["/", "/login", "/register", "/dashboard", "/api/auth/login", "/api/auth/register"];
 const healthPath = "/api/health";
 
 function setSecurityHeaders(response: NextResponse) {
